@@ -1,5 +1,6 @@
 # aggregating tblART into a time-updated, long-format dataset
 # tracks regimen changes in patients
+# important note: the enrol_d from tblBAS matches perfectly with the start of first regimen in tblART
 
 library(data.table)
 library(readr)

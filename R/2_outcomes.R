@@ -5,8 +5,6 @@
 
 library(data.table)
 
-db_closing_d <- as.Date("2025-12-31")
-
 filepath_source <- "C:/ISPM/Data/SolidarMed/source"
 filepath_write <- "C:/ISPM/Data/SolidarMed/processed"
 
@@ -16,6 +14,8 @@ load(file=file.path(filepath_source,"tblLAB_CD4.RData"))
 load(file=file.path(filepath_source,"tblLAB_RNA.RData"))
 load(file=file.path(filepath_source,"tblLTFU.RData"))
 load(file=file.path(filepath_source,"tblVIS.RData"))
+
+DB_CLOSING_D <- as.Date("2025-12-31")
 
 tblLTFU[,`:=`(outcome="In care",outcome_d=as.Date(NA))]
 tblLTFU[drop_rs==1,`:=`(outcome="Transfer",outcome_d=drop_d)]
@@ -47,8 +47,8 @@ tblVISlast[is.na(next_visit_d) & program=="SMARTZIM",next_visit_d:=vis_d+88]
 tblOUTCOMES <- tblLTFU[,.(patient,outcome,outcome_d)]
 tblOUTCOMES <- merge(tblOUTCOMES,tblVISlast[,.(patient,last_visit_d=vis_d,next_visit_d)],by="patient")
 tblOUTCOMES[,`:=`(rev_outcome=outcome,rev_outcome_d=outcome_d)]
-tblOUTCOMES[!outcome%in%c("Transfer","Dead") & next_visit_d+90<db_closing_d,`:=`(rev_outcome="LTFU",rev_outcome_d=last_visit_d)]
-tblOUTCOMES[!outcome%in%c("Transfer","Dead") & next_visit_d+90>=db_closing_d,`:=`(rev_outcome="In care",rev_outcome_d=pmin(next_visit_d,db_closing_d))]
+tblOUTCOMES[!outcome%in%c("Transfer","Dead") & next_visit_d+90<DB_CLOSING_D,`:=`(rev_outcome="LTFU",rev_outcome_d=last_visit_d)]
+tblOUTCOMES[!outcome%in%c("Transfer","Dead") & next_visit_d+90>=DB_CLOSING_D,`:=`(rev_outcome="In care",rev_outcome_d=pmin(next_visit_d,DB_CLOSING_D))]
 tblOUTCOMES[,`:=`(last_visit_d=NULL,next_visit_d=NULL)]
 stopifnot(tblOUTCOMES[,all(!is.na(rev_outcome_d))])
 
