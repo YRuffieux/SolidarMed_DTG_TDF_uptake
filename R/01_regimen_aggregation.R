@@ -51,7 +51,8 @@ tblART <- merge(tblART,tblBAS[,.(patient,enrol_d)],by="patient")
 create_regimen_long <- function(patient,art_sd,art_ed,drug,arv_class,enrol_d)
 {
   start0 <- as.numeric(enrol_d[1])            # start of follow-up for that individual
-  Z <- data.table(patient,start=as.numeric(art_sd),stop=as.numeric(art_ed)+1,drug,arv_class,switch=1)
+  Z <- data.table(patient,start=as.numeric(art_sd),stop=as.numeric(art_ed),drug,arv_class,switch=1)
+  Z[start!=start0,start:=start-1]              # bringing back date of new drug by one day to match end date of previous drug
   Z <- rbind(Z,data.table(patient=Z[1,patient],start=start0,stop=Z[,max(stop)],drug="",arv_class="",switch=1)) # adding background "empty" regimen to capture gaps with no meds
   Z <- data.table(survSplit(Surv(start,stop,switch)~.,cut=Z[,sort(unique(c(start,stop)))],data=Z)) # splitting at each regimen change
   # aggregation: medications and medication type
@@ -65,6 +66,7 @@ create_regimen_long <- function(patient,art_sd,art_ed,drug,arv_class,enrol_d)
 }
 
 tblART_agg <- tblART[,create_regimen_long(patient,art_sd,art_ed,drug,arv_class,enrol_d),by="patient"] # aggregating full ART table, takes ~10 minutes
+tblART_agg <- tblART_agg[,.(patient,start,stop,regimen,regimen_class)]
 
 save(tblART_agg,file=file.path(filepath_write,"tblART_agg.RData"))
 
