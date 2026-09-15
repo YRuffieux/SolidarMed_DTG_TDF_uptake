@@ -70,11 +70,12 @@ DT[,`:=`(start_d=NULL,stop_d=NULL)]
 
 # age scale -> time-updating
 DT[,`:=`(tstart=age_dtg_adopt,tstop=tstop+age_dtg_adopt)]
-DT <- data.table(survSplit(Surv(tstart,tstop,status)~.,cut=age_cutoffs,episode="age_group",data=DT))
+DT <- data.table(survSplit(Surv(tstart,tstop,status)~.,cut=age_cutoffs,episode="age_group_current",data=DT))
+DT[,age_group_current:=factor(age_group_current)]
 
 # back to calendar scale
 DT[,`:=`(tstart=tstart-age_dtg_adopt,tstop=tstop-age_dtg_adopt)]
 
 # saving
-DT <- DT[,.(patient,program,district,sex,age_group,tstart,tstop,status)]
+DT <- DT[,.(patient,program,district,sex,age_group_current,tstart,tstop,status)]
 save(DT,file=file.path(filepath_processed,"DTG_switch_cohort.RData"))
