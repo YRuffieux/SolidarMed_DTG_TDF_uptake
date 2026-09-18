@@ -1,6 +1,7 @@
 library(readstata13)
 library(data.table)
 library(tictoc)
+library(readxl)
 
 filepath_source <- "Y:/IeDEA/IeDEA_Science/Datasets/Stata_Files/Stata_202606_Jun"
 filepath_write <- "C:/ISPM/Data/SolidarMed/source"
@@ -41,5 +42,10 @@ rm(tblLAB_RNA)
 
 tblCENTER <- data.table(read.dta13(file.path(filepath_source,"tblCENTER.dta")))
 tblCENTER <- tblCENTER[program%in%c("SMARTMOZ","SMARTLES","SMARTZIM")]
+# filling in missing districts
+X <- data.table(read_xlsx("C:/ISPM/HomeDir/SolidarMed report/Docs/missing_districts_filled.xlsx"))
+tblCENTER <- merge(tblCENTER,X[,.(center,district_temp=district)],by="center",all.x=TRUE)
+tblCENTER[district=="",district:=district_temp]
+setorder(tblCENTER,"program")
 save(tblCENTER,file=file.path(filepath_write,"tblCENTER.RData"))
-rm(tblCENTER)
+rm(tblCENTER,X)

@@ -24,9 +24,7 @@ DT[is.na(center_enrol),center_enrol:=center_last]
 DT[,center_last:=NULL]
 
 DT <- merge(DT,tblCENTER[,.(center_enrol=center,district)],by="center_enrol",all.x=TRUE)
-DT[district=="" | is.na(district),district:="Unknown"]  # note: only SMARTMOZ has people with missing district
-DT[district=="Unknown",table(program)]
-DT[,`:=`(district=factor(district,levels=c("Butha-Buthe","Mokhotlong","Ancuabe","Chiure","Unknown","Bikita","Zaka")),program=factor(program))]
+DT[,`:=`(district=factor(district,levels=c("Butha-Buthe","Mokhotlong","Ancuabe","Chiure","Bikita","Zaka")),program=factor(program))]
 DT[,year_base:=year(enrol_d)]
 
 DT <- DT[!is.na(center_enrol)]   # removing individuals with no declared clinic
