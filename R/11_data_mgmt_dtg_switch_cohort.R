@@ -1,4 +1,5 @@
 # creating "switching cohort" of people who are on (non-DTG) ART at time of DTG adoption
+# this cohort DOES NOT include invidiuals iniating (non-DTG) ART after DTG adoption
 # survival format, time-updated with respect to age
 # t=0 correspond to date of DTG adoption
 
@@ -75,5 +76,5 @@ DT[,age_group_current:=factor(age_group_current)]
 DT[,`:=`(tstart=tstart-age_dtg_adopt,tstop=tstop-age_dtg_adopt)]
 
 # saving
-DT <- DT[,.(patient,program,district,sex,age_group_current,tstart,tstop,status)]
+DT <- DT[,.(patient,program,district,sex,age_group_current,age_dtg_adopt,tstart,tstop,status)]
 save(DT,file=file.path(filepath_processed,"DTG_switch_cohort.RData"))

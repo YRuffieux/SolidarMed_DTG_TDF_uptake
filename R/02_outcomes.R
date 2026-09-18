@@ -1,6 +1,6 @@
 # censoring dates and revised outcomes (Death, Transfer, LTFU, RIC)
 # if still in care: censor date = database closure
-# if LTFU (90 days late to last scheduled visit): censor date = date of last visit
+# if LTFU (90 days late to last scheduled visit, not dead/transferred): censor date = date of last visit
 # otherwise date of Death/Transfer
 
 library(data.table)
