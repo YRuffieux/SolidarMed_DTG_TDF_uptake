@@ -1,3 +1,5 @@
+# Royston-Parmer models of time to first DTG uptake
+
 library(data.table)
 library(rstpm2)
 library(tictoc)
@@ -9,9 +11,7 @@ load(file=file.path(filepath_load,"DTG_switch_cohort.RData"))
 
 fup_grid <- seq(0,7,by=1/50)
 
-DT <- DT[district!="Unknown"]
-
-# absolute probabilities 
+#### absolute probabilities 
 
 pred_list <- list()
 
@@ -40,7 +40,7 @@ for(prog in c("SMARTLES","SMARTMOZ","SMARTZIM"))
 
 save(pred_list,file=file.path(filepath_out,"DTG_cumulprobs_switch_cohort.RData"))
 
-# probability differences between districts, adjusting for sex and age
+#### probability differences between districts, adjusting for sex and age
 
 diff_list <- list()
 pred_grid <- data.frame(tstop=fup_grid,district_num=0,sex=factor("Male",levels=c("Male","Female")),age_group_current=factor(1,levels=1:6))
