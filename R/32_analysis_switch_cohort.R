@@ -70,27 +70,3 @@ for(prog in c("SMARTLES","SMARTMOZ","SMARTZIM"))
 
 save(pred_list,file=file.path(filepath_out,"DTG_cumulprobdiffs_switch_cohort.RData"))
 rm(pred_grid,pred_list)
-
-#### hazard ratios between districts, adjusting for sex and age
-
-# diff_list <- list()
-# pred_grid <- data.frame(tstop=fup_grid,district_num=0,sex=factor("Male",levels=c("Male","Female")),age_group_current=factor(1,levels=1:6))
-# 
-# for(prog in c("SMARTLES","SMARTMOZ","SMARTZIM"))
-# {
-#   DT_temp <- DT[program==prog]
-#   DT_temp[,district_num:=as.numeric(NA)]
-#   DT_temp[district%in%c("Butha-Buthe","Ancuabe","Bikita"),district_num:=0]
-#   DT_temp[district%in%c("Mokhotlong","Chiure","Zaka"),district_num:=1]
-#   stopifnot(DT_temp[,all(!is.na(district_num))])
-#   
-#   sreg <- stpm2(Surv(tstart,tstop,status)~district_num + sex + age_group_current,df=5,tvc=list(district_num=3),data=DT_temp)
-#   
-#   # adjusted hazard ratios for DTG uptakes between districts
-#   pred_hr <- data.table(predict(sreg,newdata=pred_grid,type="hr",var="district_num",full=TRUE,se.fit=TRUE))
-#   
-#   diff_list[[prog]] <- pred_hr
-#   rm(DT_temp,sreg,pred_hr)
-# }
-# 
-# save(diff_list,file=file.path(filepath_out,"DTG_aHR_switch_cohort.RData"))

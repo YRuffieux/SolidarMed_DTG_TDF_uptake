@@ -1,3 +1,5 @@
+# GAM models for DTG uptake at ART initiation
+
 library(data.table)
 library(tictoc)
 library(mgcv)
@@ -45,7 +47,7 @@ for(prog in c("SMARTLES","SMARTMOZ","SMARTZIM"))
 save(pred_list,file=file.path(filepath_out,"DTG_probs_init_cohort.RData"))
 rm(pred_list)
 
-###### adjusted probability differences for DTG uptake, over time
+###### mean probability differences for DTG uptake, over time
 
 pred_list <- list()
 
