@@ -49,11 +49,6 @@ rm(pp_les,pp_moz,pp_zim,pp)
 
 ##### adjusted probability differences
 
-load(file=file.path(filepath_read,"DTG_probs_init_cohort.RData"))
-
-
-##### odds ratios
-
 load(file=file.path(filepath_read,"DTG_probdiffs_init_cohort.RData"))
 
 pp_les <- ggplot(pred_list[["SMARTLES"]],aes(x=delta_init,y=Estimate)) +
