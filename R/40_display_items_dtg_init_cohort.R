@@ -9,7 +9,7 @@ filepath_plot <- "C:/ISPM/HomeDir/SolidarMed report/Output/Plots"
 # colorblind-friendly palette
 cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 
-##### cumulative probabilities
+##### probabilities at ART initiation
 
 load(file=file.path(filepath_read,"DTG_probs_init_cohort.RData"))
 
@@ -45,9 +45,9 @@ pp <- pp_les + pp_moz + pp_zim + plot_layout(ncol=1, axis_titles="collect_y") &
   labs(y="Percentage initiating ART on DTG")
 
 ggsave(pp,filename=file.path(filepath_plot,"DTG_probs_init_cohort.png"),width=7,height=7,dpi=600)
-rm(pp_les,pp_moz,pp_zim,pp)
+rm(pp_les,pp_moz,pp_zim,pp,pred_list)
 
-##### adjusted probability differences
+##### mean probability differences
 
 load(file=file.path(filepath_read,"DTG_probdiffs_init_cohort.RData"))
 
@@ -71,7 +71,7 @@ pp <- pp_les + pp_moz + pp_zim + plot_layout(ncol=1, axis_titles="collect_y") &
   theme(panel.grid.minor=element_blank(),legend.position=c(0.8,0.4)) &
   scale_y_continuous(labels=scales::percent,limits=c(-0.3,0.3)) &
   scale_x_continuous(breaks=0:7) &
-  labs(y="Percent difference in percentage of DTG uptake")
+  labs(y="Mean difference in percentage of DTG uptake")
 
 ggsave(pp,filename=file.path(filepath_plot,"DTG_probdiffs_init_cohort.png"),width=7,height=7,dpi=600)
-rm(pp_les,pp_moz,pp_zim,pp)
+rm(pp_les,pp_moz,pp_zim,pp,pred_list)
