@@ -31,13 +31,11 @@ for(prog in c("SMARTLES","SMARTMOZ","SMARTZIM"))
   
   greg <- gam(dtg_ind ~ s(delta_init, by=district), family=binomial(link="logit"), data=DT_temp)
   
-  pred_prob <- predict(greg,newdata=pred_grid,type="response",se.fit=TRUE)
+  pred_prob <- predict(greg,newdata=pred_grid,type="link",se.fit=TRUE)
   pred_prob <- data.table(Estimate=c(pred_prob$fit),SE=c(pred_prob$se.fit))
-  pred_prob <- cbind(data.table(pred_grid),pred_prob)
-  pred_prob[,`:=`(lower=Estimate-qnorm(0.975)*SE,upper=Estimate+qnorm(0.975)*SE)]
+  pred_prob[,`:=`(Estimate=plogis(Estimate),lower=plogis(Estimate-qnorm(0.975)*SE),upper=plogis(Estimate+qnorm(0.975)*SE))]
+  pred_prob <- cbind(data.table(pred_grid,pred_prob))
   pred_prob[,SE:=NULL]
-  pred_prob[upper>1,upper:=1]
-  pred_prob[lower<0,lower:=0]
   
   pred_list[[prog]] <- pred_prob
   

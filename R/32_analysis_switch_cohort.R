@@ -54,10 +54,6 @@ for(prog in c("SMARTLES","SMARTMOZ","SMARTZIM"))
   DT_temp[district%in%c("Mokhotlong","Chiure","Zaka"),district_num:=1]
   stopifnot(DT_temp[,all(!is.na(district_num))])
   
-  # pred_grid <- data.frame(tstop=seq(0,7,by=1/50),district_num=0,sex=factor("Male",levels=c("Male","Female")),age_group_current=factor(1,levels=1:6))
-  # sreg <- stpm2(Surv(tstart,tstop,status)~  district_num + sex + age_group_current, df=5, tvc=list(district_num=3), data=DT_temp)
-  # pred_diff <- data.table(predict(sreg,newdata=pred_grid, type="sdiff",var="district_num",full=TRUE,se.fit=TRUE))
-  
   sreg <- stpm2(Surv(tstart,tstop,status)~district_num + sex + age_group_current, df=5, tvc=list(district_num=3), data=DT_temp)
   pred_diff <- data.table(predict(sreg,newdata=pred_grid,type="meansurvdiff",var="district_num",full=TRUE,se.fit=TRUE))
   
