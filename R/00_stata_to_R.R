@@ -1,3 +1,6 @@
+# exporting source files to R
+# also restricting to SOLIDARMED cohorts
+
 library(readstata13)
 library(data.table)
 library(tictoc)

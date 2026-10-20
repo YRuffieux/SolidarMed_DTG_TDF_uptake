@@ -1,5 +1,5 @@
 # creating "switching cohort" of people who are on (non-DTG) ART at time of DTG adoption
-# this cohort DOES NOT include invidiuals iniating (non-DTG) ART after DTG adoption
+# this cohort DOES NOT include invidiuals inititing ART after DTG adoption
 # survival format, time-updated with respect to age
 # t=0 correspond to date of DTG adoption
 
@@ -72,7 +72,7 @@ DT[,`:=`(tstart=age_dtg_adopt,tstop=tstop+age_dtg_adopt)]
 DT <- data.table(survSplit(Surv(tstart,tstop,status)~.,cut=age_cutoffs,episode="age_group_current",data=DT))
 DT[,age_group_current:=factor(age_group_current)]
 
-# back to calendar scale
+# back to desired scale
 DT[,`:=`(tstart=tstart-age_dtg_adopt,tstop=tstop-age_dtg_adopt)]
 
 # saving
