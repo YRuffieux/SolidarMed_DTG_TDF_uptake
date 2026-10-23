@@ -19,8 +19,8 @@ LES_DTG_ADOPT_D <- as.Date("2018-11-01")
 MOZ_DTG_ADOPT_D <- as.Date("2019-05-01")
 ZIM_DTG_ADOPT_D <- as.Date("2019-05-01")
 
-# age cutoffs
-age_cutoffs <- c(20,30,40,50,70)
+# age cutoffs (time-updating)
+age_cutoffs <- c(30,40,50,70)
 
 DT <- tblBAS[,.(patient,program,birth_d,enrol_d,sex,center_enrol,center_last)]
 
@@ -45,6 +45,9 @@ DT[,sex:=factor(sex,levels=c(1,2),labels=c("Male","Female"))]
 
 # age at DTG adoption date
 DT[,age_dtg_adopt:=as.numeric(dtg_adopt_d-birth_d)/365.25]
+
+# removing people aged below 16 at DTG adoption date
+DT <- DT[age_dtg_adopt>=16]
 
 # censor date
 DT <- merge(DT,tblOUTCOMES[,.(patient,rev_outcome_d)],by="patient")

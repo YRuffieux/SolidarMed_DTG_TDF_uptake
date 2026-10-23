@@ -9,17 +9,15 @@ library(readxl)
 
 filepath_load <- "C:/ISPM/Data/SolidarMed/processed"
 filepath_save <- "C:/ISPM/Data/SolidarMed/output"
-filepath_lookup <- "C:/ISPM/HomeDir/SolidarMed report/Repository/R/Lookup"
 
 load(file=file.path(filepath_load,"DTG_switch_cohort.RData"))
-df_choices <- data.table(read_xlsx(file.path(filepath_lookup,"df_choice_DTG.xlsx")))
 
 tic()
 
 N_boot <- 1000
 
 set.seed(123410)
-fup_grid <- seq(0,7,by=1/365.25)
+fup_grid <- seq(0,7,by=1/365.25)[-1]
 
 ########## absolute probabilities
 
@@ -32,8 +30,6 @@ for(prog in c("SMARTLES","SMARTMOZ","SMARTZIM"))
   print(prog)
   df_temp <- data.table(P0.5=rep(as.numeric(NA),N_boot),P0.75=rep(as.numeric(NA),N_boot),
                         warn=rep(0,N_boot))
-  df <- df_choices[country==prog,switch0]
-  df_int <- df_choices[country==prog,switch_int]
   for(i in 1:N_boot)
   {
     if(i%%10==0)
@@ -44,7 +40,7 @@ for(prog in c("SMARTLES","SMARTMOZ","SMARTZIM"))
     DT_temp[district%in%c("Mokhotlong","Chiure","Zaka"),district_num:=1]
     stopifnot(DT_temp[,all(!is.na(district_num))])
     
-    sreg <- stpm2(Surv(tstart,tstop,status)~district_num,df=df,tvc=list(district_num=df_int),data=DT_temp)
+    sreg <- stpm2(Surv(tstart,tstop,status)~district_num,df=5,tvc=list(district_num=3),data=DT_temp)
     
     pred_prob <- data.table(predict(sreg,newdata=pred_grid,type="surv",full=TRUE,se.fit=FALSE))
     pred_prob[,Estimate:=1-Estimate]
@@ -57,6 +53,7 @@ for(prog in c("SMARTLES","SMARTMOZ","SMARTZIM"))
       {
         t0 <- X0[match(TRUE,X0[,Estimate]>thresh),tstop]  # first time above threshold
         t1 <- X1[match(TRUE,X1[,Estimate]>thresh),tstop]
+        stopifnot(!is.na(t0) && !is.na(t1))
         df_temp[i,paste0("P",thresh):=t1-t0]   # delay in reaching threshold, district 1 vs. 0 (in years)
         rm(t0,t1)
       }
@@ -64,10 +61,13 @@ for(prog in c("SMARTLES","SMARTMOZ","SMARTZIM"))
     } else{
       df_temp[i,warn:=1] 
     }
+    if(warning_flag==1)
+      df_temp[i,warn:=2]
+    
     rm(sreg,pred_prob,DT_temp)
   }
   list_out[[prog]] <- df_temp
-  rm(df_temp,df)
+  rm(df_temp)
 }
 
 save(list_out,file=file.path(filepath_save,"DTG_bootstrap_switch_cohort.RData"))

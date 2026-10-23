@@ -50,10 +50,13 @@ DT <- tblART_agg[dtg_switch_ind==-1,.(patient,first_off_dtg_d=start)][DT,on="pat
 DT <- DT[!is.na(first_dtg_d) & first_dtg_d>=dtg_adopt_d & year(first_dtg_d)<2025]
 stopifnot(DT[,all(is.na(first_off_dtg_d) | (first_off_dtg_d>first_dtg_d))])
 
+# restricting to individuals aged 16 or above at DTG initiation
+DT <- DT[as.numeric(first_dtg_d-birth_d)/365.25>=16]
+
 # descriptive results
-DT[,table(!is.na(first_off_dtg_d))]
-DT[,prop.table(table(!is.na(first_off_dtg_d)))]
-DT[!is.na(first_off_dtg_d),table(district)]
-DT[!is.na(first_off_dtg_d),quantile(as.numeric(first_off_dtg_d-first_dtg_d),probs=c(0.25,0.5,0.75))]
+print(DT[,table(!is.na(first_off_dtg_d))])
+print(DT[,prop.table(table(!is.na(first_off_dtg_d)))])
+print(DT[!is.na(first_off_dtg_d),table(district)])
+print(DT[!is.na(first_off_dtg_d),quantile(as.numeric(first_off_dtg_d-first_dtg_d),probs=c(0.25,0.5,0.75))])
 
 

@@ -7,7 +7,7 @@ filepath_tables <- "C:/ISPM/HomeDir/SolidarMed report/Output/Tables"
 
 load(file=file.path(filepath_processed,"DTG_init_cohort.RData"))
 
-DT[,`:=`(age_base_cat=cut(age_base,breaks=c(0,20,30,40,50,70,Inf),right=FALSE),
+DT[,`:=`(age_base_cat=cut(age_base,breaks=c(16,30,40,50,70,Inf),right=FALSE),
          dtg_ind=factor(dtg_ind))]
 
 tab <- CreateTableOne(vars=c("sex","age_base_cat","age_base","dtg_ind"),strata="district",test=FALSE,data=DT)

@@ -54,6 +54,9 @@ DT[,delta_init:=as.numeric(enrol_d-dtg_adopt_d)/365.25]
 # restricting to individuals initiating ART after DTG adoption
 DT <- DT[delta_init>=0]
 
+# restricting to individuals aged 16 or above
+DT <- DT[age_base>=16]
+
 # saving
 DT <- DT[,.(patient,program,district,sex,age_base,delta_init,dtg_ind)]
 save(DT,file=file.path(filepath_processed,"DTG_init_cohort.RData"))
